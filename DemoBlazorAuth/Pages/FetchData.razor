@@ -1,0 +1,73 @@
+﻿@page "/fetchdata"
+
+@* @inject AuthenticationStateProvider AuthenticationStateProvider *@
+
+<PageTitle>Weather forecast</PageTitle>
+
+@using DemoBlazorAuth.Data
+@inject WeatherForecastService ForecastService
+
+<h1>Weather forecast</h1>
+
+<p>This component demonstrates fetching data from a service.</p>
+
+<AuthorizeView>
+    <Authorized>
+        @if (forecasts == null)
+        {
+            <p><em>Loading...</em></p>
+        }
+        else
+        {
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Temp. (C)</th>
+                        <th>Temp. (F)</th>
+                        <th>Summary</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var forecast in forecasts)
+                    {
+                        <tr>
+                            <td>@forecast.Date.ToShortDateString()</td>
+                            <td>@forecast.TemperatureC</td>
+                            <td>@forecast.TemperatureF</td>
+                            <td>@forecast.Summary</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </Authorized>
+    <NotAuthorized>
+        <p>Authentication is required to access this page.</p>
+    </NotAuthorized>
+</AuthorizeView>
+
+
+@code {
+    private WeatherForecast[]? forecasts;
+
+    [CascadingParameter]
+    private Task<AuthenticationState>? AuthenticationStateProvider { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        if(AuthenticationStateProvider is null)
+        {
+            return;
+        }
+
+        var authState = await AuthenticationStateProvider;
+
+        if (authState?.User.Identity?.IsAuthenticated != true)
+        {
+            return;
+        }
+
+        forecasts = await ForecastService.GetForecastAsync(DateTime.Now);
+    }
+}
