@@ -1,6 +1,5 @@
 using DemoBlazorAuth;
 using DemoBlazorAuth.Data;
-using DemoBlazorAuth.Shared;
 using Microsoft.AspNetCore.Components.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);

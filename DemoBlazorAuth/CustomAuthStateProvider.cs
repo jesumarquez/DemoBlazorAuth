@@ -1,5 +1,4 @@
 ﻿using System.Security.Claims;
-using DemoBlazorAuth.Shared;
 using Microsoft.AspNetCore.Components.Authorization;
 
 namespace DemoBlazorAuth
